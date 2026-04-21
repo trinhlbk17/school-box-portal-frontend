@@ -19,17 +19,17 @@
 
 > Goal: Working Vite project with all dependencies, configs, and folder structure.
 
-- [ ] **0.1** Init Vite + React + TypeScript project
-- [ ] **0.2** Install core dependencies (React Router, TanStack Query, Zustand, Axios)
-- [ ] **0.3** Install UI dependencies (Tailwind CSS v4, shadcn/ui, clsx, tailwind-merge, cva)
-- [ ] **0.4** Install form dependencies (React Hook Form, Zod, @hookform/resolvers)
-- [ ] **0.5** Install dev dependencies (Vitest, Testing Library, MSW, Playwright)
-- [ ] **0.6** Configure `tsconfig.json` (strict mode, path aliases `@/`)
-- [ ] **0.7** Configure Tailwind v4 with `@theme` tokens from DESIGN_SYSTEM.md
-- [ ] **0.8** Import Inter font (Google Fonts)
-- [ ] **0.9** Create `.env.example` + env validation with Zod (`src/shared/lib/env.ts`)
-- [ ] **0.10** Create folder structure (`src/app/`, `src/features/`, `src/shared/`, `src/test/`)
-- [ ] **0.11** Verify dev server runs (`npm run dev`)
+- [x] **0.1** Init Vite + React + TypeScript project
+- [x] **0.2** Install core dependencies (React Router, TanStack Query, Zustand, Axios)
+- [x] **0.3** Install UI dependencies (Tailwind CSS v4, shadcn/ui, clsx, tailwind-merge, cva)
+- [x] **0.4** Install form dependencies (React Hook Form, Zod, @hookform/resolvers)
+- [x] **0.5** Install dev dependencies (Vitest, Testing Library, MSW, Playwright)
+- [x] **0.6** Configure `tsconfig.json` (strict mode, path aliases `@/`)
+- [x] **0.7** Configure Tailwind v4 with `@theme` tokens from DESIGN_SYSTEM.md
+- [x] **0.8** Import Inter font (Google Fonts)
+- [x] **0.9** Create `.env.example` + env validation with Zod (`src/shared/lib/env.ts`)
+- [x] **0.10** Create folder structure (`src/app/`, `src/features/`, `src/shared/`, `src/test/`)
+- [x] **0.11** Verify dev server runs (`npm run dev`)
 
 **Deliverable:** Empty app renders in browser with correct font and colors.
 
@@ -369,7 +369,7 @@
 
 | Phase | Tasks | Done | Blocked | Status |
 |-------|-------|------|---------|--------|
-| 0 — Init | 11 | 0 | 0 | Not started |
+| 0 — Init | 11 | 11 | 0 | Completed |
 | 1 — Auth & Shell | 27 | 0 | 0 | Not started |
 | 2 — Shared UI | 17 | 0 | 0 | Not started |
 | 3 — Schools & Classes | 24 | 0 | 0 | Not started |
@@ -380,4 +380,4 @@
 | 8 — User Portal | 16 | 0 | 2 | Not started |
 | 9 — Polish | 20 | 0 | 0 | Not started |
 | 10 — Testing | 10 | 0 | 0 | Not started |
-| **Total** | **179** | **0** | **3** | **Not started** |
+| **Total** | **179** | **11** | **3** | **In progress** |
