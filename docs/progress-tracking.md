@@ -1,6 +1,6 @@
 # Progress Tracking — School Box Portal Frontend
 
-> Last updated: 2026-04-21
+> Last updated: 2026-04-22
 > Track implementation progress. Each task is small enough for a single session.
 
 ---
@@ -41,45 +41,45 @@
 
 ### 1A — Shared Foundation
 
-- [ ] **1.1** Create `apiClient.ts` with Axios interceptors (`x-session-id`, 401 handling)
-- [ ] **1.2** Create `cn.ts` utility (clsx + tailwind-merge)
-- [ ] **1.3** Create shared types (`api.types.ts`: `ApiResponse<T>`, `PaginatedResponse<T>`, `AppError`)
-- [ ] **1.4** Create `normalizeApiError.ts` utility
-- [ ] **1.5** Create shared constants (`routes.ts`, `roles.ts`)
+- [x] **1.1** Create `apiClient.ts` with Axios interceptors (`x-session-id`, 401 handling)
+- [x] **1.2** Create `cn.ts` utility (clsx + tailwind-merge)
+- [x] **1.3** Create shared types (`api.types.ts`: `ApiResponse<T>`, `PaginatedResponse<T>`, `AppError`)
+- [x] **1.4** Create `normalizeApiError.ts` utility
+- [x] **1.5** Create shared constants (`routes.ts`, `roles.ts`)
 
 ### 1B — Auth Feature
 
-- [ ] **1.6** Create `auth/types/auth.types.ts` (User, LoginInput, LoginResponse)
-- [ ] **1.7** Create `auth/stores/useAuthStore.ts` (Zustand — user, token, setSession, logout)
-- [ ] **1.8** Create `auth/api/authApi.ts` (login, logout, getMe)
-- [ ] **1.9** Create `auth/schemas/loginSchema.ts` (Zod validation)
-- [ ] **1.10** Create `auth/hooks/useLogin.ts` (mutation hook)
-- [ ] **1.11** Create `auth/hooks/useLogout.ts` (mutation hook)
-- [ ] **1.12** Create `auth/hooks/useCurrentUser.ts` (query hook for /auth/me)
-- [ ] **1.13** Create `auth/index.ts` barrel exports
+- [x] **1.6** Create `auth/types/auth.types.ts` (User, LoginInput, LoginResponse)
+- [x] **1.7** Create `auth/stores/useAuthStore.ts` (Zustand — user, token, setSession, logout)
+- [x] **1.8** Create `auth/api/authApi.ts` (login, logout, getMe)
+- [x] **1.9** Create `auth/schemas/loginSchema.ts` (Zod validation)
+- [x] **1.10** Create `auth/hooks/useLogin.ts` (mutation hook)
+- [x] **1.11** Create `auth/hooks/useLogout.ts` (mutation hook)
+- [x] **1.12** Create `auth/hooks/useCurrentUser.ts` (query hook for /auth/me)
+- [x] **1.13** Create `auth/index.ts` barrel exports
 
 ### 1C — Route Guards
 
-- [ ] **1.14** Create `AuthGuard.tsx` (check session, redirect to /login)
-- [ ] **1.15** Create `AdminGuard.tsx` (ADMIN + TEACHER only)
-- [ ] **1.16** Create `PortalGuard.tsx` (STUDENT + PROTECTOR only)
+- [x] **1.14** Create `AuthGuard.tsx` (check session, redirect to /login)
+- [x] **1.15** Create `AdminGuard.tsx` (ADMIN + TEACHER only)
+- [x] **1.16** Create `PortalGuard.tsx` (STUDENT + PROTECTOR only)
 
 ### 1D — Layouts
 
-- [ ] **1.17** Create `AdminLayout.tsx` (sidebar + header + content area)
-- [ ] **1.18** Create `PortalLayout.tsx` (top bar + content + bottom nav)
-- [ ] **1.19** Create sidebar navigation component (role-aware menu items)
-- [ ] **1.20** Create top bar / header component (logo, profile dropdown)
+- [x] **1.17** Create `AdminLayout.tsx` (sidebar + header + content area)
+- [x] **1.18** Create `PortalLayout.tsx` (top bar + content + bottom nav)
+- [x] **1.19** Create sidebar navigation component (role-aware menu items, collapsible)
+- [x] **1.20** Create top bar / header component (logo, profile dropdown with logout)
 
 ### 1E — Routing & Login Page
 
-- [ ] **1.21** Create `auth.routes.tsx` (login route)
-- [ ] **1.22** Create `admin.routes.tsx` (all admin routes, lazy-loaded)
-- [ ] **1.23** Create `portal.routes.tsx` (all portal routes, lazy-loaded)
-- [ ] **1.24** Create `App.tsx` with route composition + providers
-- [ ] **1.25** Create `providers.tsx` (QueryClientProvider, BrowserRouter)
-- [ ] **1.26** Create `LoginPage.tsx` (form + validation + role-based redirect)
-- [ ] **1.27** Test login flow end-to-end with backend
+- [x] **1.21** Create `auth.routes.tsx` (login route)
+- [x] **1.22** Create `admin.routes.tsx` (all admin routes, lazy-loaded)
+- [x] **1.23** Create `portal.routes.tsx` (all portal routes, lazy-loaded)
+- [x] **1.24** Create `App.tsx` with route composition + providers
+- [x] **1.25** Create `providers.tsx` (QueryClientProvider, BrowserRouter)
+- [x] **1.26** Create `LoginPage.tsx` (form + validation + role-based redirect)
+- [x] **1.27** Test login flow end-to-end with backend
 
 **Deliverable:** Login works, redirects by role, guards protect routes, layouts render.
 
@@ -89,23 +89,23 @@
 
 > Goal: Reusable shadcn/ui components configured with our design tokens.
 
-- [ ] **2.1** Init shadcn/ui (`npx shadcn-ui@latest init`)
-- [ ] **2.2** Add Button component (all variants from DESIGN_SYSTEM.md)
-- [ ] **2.3** Add Card component (Card, CardHeader, CardContent, CardFooter)
-- [ ] **2.4** Add Input + Label + FormField components
-- [ ] **2.5** Add Badge component (status variants: success, warning, error, info)
-- [ ] **2.6** Add Dialog / Modal component
-- [ ] **2.7** Add DropdownMenu component
-- [ ] **2.8** Add Table component (for DataTable base)
-- [ ] **2.9** Add Skeleton component (loading states)
-- [ ] **2.10** Add Toast / Sonner setup
-- [ ] **2.11** Create `DataTable.tsx` wrapper (reusable table with pagination, search)
-- [ ] **2.12** Create `EmptyState.tsx` component
-- [ ] **2.13** Create `ErrorAlert.tsx` component
-- [ ] **2.14** Create `PageHeader.tsx` component (title + breadcrumb + actions)
-- [ ] **2.15** Create `ConfirmDialog.tsx` component (reusable confirm/cancel)
-- [ ] **2.16** Create shared `usePagination.ts` hook
-- [ ] **2.17** Create shared `useDebounce.ts` hook
+- [x] **2.1** Init shadcn/ui (`npx shadcn-ui@latest init`)
+- [x] **2.2** Add Button component (all variants from DESIGN_SYSTEM.md)
+- [x] **2.3** Add Card component (Card, CardHeader, CardContent, CardFooter)
+- [x] **2.4** Add Input + Label + FormField components
+- [x] **2.5** Add Badge component (status variants: success, warning, error, info)
+- [x] **2.6** Add Dialog / Modal component
+- [x] **2.7** Add DropdownMenu component
+- [x] **2.8** Add Table component (for DataTable base)
+- [x] **2.9** Add Skeleton component (loading states)
+- [x] **2.10** Add Toast / Sonner setup
+- [x] **2.11** Create `DataTable.tsx` wrapper (reusable table with pagination, search)
+- [x] **2.12** Create `EmptyState.tsx` component
+- [x] **2.13** Create `ErrorAlert.tsx` component
+- [x] **2.14** Create `PageHeader.tsx` component (title + breadcrumb + actions)
+- [x] **2.15** Create `ConfirmDialog.tsx` component (reusable confirm/cancel)
+- [x] **2.16** Create shared `usePagination.ts` hook
+- [x] **2.17** Create shared `useDebounce.ts` hook
 
 **Deliverable:** All shared UI primitives ready. No feature-specific code yet.
 
@@ -117,33 +117,33 @@
 
 ### 3A — School Feature
 
-- [ ] **3.1** Create `school/types/school.types.ts`
-- [ ] **3.2** Create `school/api/schoolApi.ts`
-- [ ] **3.3** Create `school/hooks/useSchools.ts` (list query)
-- [ ] **3.4** Create `school/hooks/useSchool.ts` (detail query)
-- [ ] **3.5** Create `school/hooks/useCreateSchool.ts` (mutation)
-- [ ] **3.6** Create `school/hooks/useUpdateSchool.ts` (mutation)
-- [ ] **3.7** Create `school/hooks/useDeleteSchool.ts` (mutation)
-- [ ] **3.8** Create `school/schemas/schoolSchema.ts` (Zod)
-- [ ] **3.9** Create `SchoolListPage.tsx` (table + search + pagination)
-- [ ] **3.10** Create `SchoolForm.tsx` (create/edit modal)
-- [ ] **3.11** Create `SchoolDetailPage.tsx` (school info + class list)
-- [ ] **3.12** Create `school/index.ts` barrel
-- [ ] **3.13** Test school CRUD end-to-end
+- [x] **3.1** Create `school/types/school.types.ts`
+- [x] **3.2** Create `school/api/schoolApi.ts`
+- [x] **3.3** Create `school/hooks/useSchools.ts` (list query)
+- [x] **3.4** Create `school/hooks/useSchool.ts` (detail query)
+- [x] **3.5** Create `school/hooks/useCreateSchool.ts` (mutation)
+- [x] **3.6** Create `school/hooks/useUpdateSchool.ts` (mutation)
+- [x] **3.7** Create `school/hooks/useDeleteSchool.ts` (mutation)
+- [x] **3.8** Create `school/schemas/schoolSchema.ts` (Zod)
+- [x] **3.9** Create `SchoolListPage.tsx` (table + search + pagination)
+- [x] **3.10** Create `SchoolForm.tsx` (create/edit modal)
+- [x] **3.11** Create `SchoolDetailPage.tsx` (school info + class list)
+- [x] **3.12** Create `school/index.ts` barrel
+- [x] **3.13** Test school CRUD end-to-end
 
 ### 3B — Class Feature
 
-- [ ] **3.14** Create `class/types/class.types.ts`
-- [ ] **3.15** Create `class/api/classApi.ts`
-- [ ] **3.16** Create `class/hooks/useClasses.ts`, `useClass.ts`
-- [ ] **3.17** Create `class/hooks/useCreateClass.ts`, `useUpdateClass.ts`, `useDeleteClass.ts`
-- [ ] **3.18** Create `class/schemas/classSchema.ts`
-- [ ] **3.19** Create `ClassDetailPage.tsx` (tabs: Students, Albums, Teachers)
-- [ ] **3.20** Create `ClassForm.tsx` (create/edit modal)
-- [ ] **3.21** Create `TeacherAssignment.tsx` (add/remove teacher)
-- [ ] **3.22** Create `MyClassesPage.tsx` (card grid for teachers)
-- [ ] **3.23** Create `class/index.ts` barrel
-- [ ] **3.24** Test class management end-to-end
+- [x] **3.14** Create `class/types/class.types.ts`
+- [x] **3.15** Create `class/api/classApi.ts`
+- [x] **3.16** Create `class/hooks/useClasses.ts`, `useClass.ts`
+- [x] **3.17** Create `class/hooks/useCreateClass.ts`, `useUpdateClass.ts`, `useDeleteClass.ts`
+- [x] **3.18** Create `class/schemas/classSchema.ts`
+- [x] **3.19** Create `ClassDetailPage.tsx` (tabs: Students, Albums, Teachers)
+- [x] **3.20** Create `ClassForm.tsx` (create/edit modal)
+- [x] **3.21** Create `TeacherAssignment.tsx` (add/remove teacher)
+- [x] **3.22** Create `MyClassesPage.tsx` (card grid for teachers)
+- [x] **3.23** Create `class/index.ts` barrel
+- [x] **3.24** Test class management end-to-end
 
 **Deliverable:** Admin can CRUD schools + classes, teachers see their classes.
 
@@ -155,25 +155,25 @@
 
 ### 4A — Student Feature
 
-- [ ] **4.1** Create `student/types/student.types.ts`
-- [ ] **4.2** Create `student/api/studentApi.ts`
-- [ ] **4.3** Create `student/hooks/useStudents.ts`, `useStudent.ts`
-- [ ] **4.4** Create `student/hooks/useCreateStudent.ts`, `useUpdateStudent.ts`
-- [ ] **4.5** Create `student/schemas/studentSchema.ts`
-- [ ] **4.6** Create `StudentListTab.tsx` (inside ClassDetail, table with search)
-- [ ] **4.7** Create `StudentForm.tsx` (create/edit)
-- [ ] **4.8** Create `StudentDetailPage.tsx` (info + protectors + transfer history)
-- [ ] **4.9** Create `student/index.ts` barrel
+- [x] **4.1** Create `student/types/student.types.ts`
+- [x] **4.2** Create `student/api/studentApi.ts`
+- [x] **4.3** Create `student/hooks/useStudents.ts`, `useStudent.ts`
+- [x] **4.4** Create `student/hooks/useCreateStudent.ts`, `useUpdateStudent.ts`
+- [x] **4.5** Create `student/schemas/studentSchema.ts`
+- [x] **4.6** Create `StudentListTab.tsx` (inside ClassDetail, table with search)
+- [x] **4.7** Create `StudentFormSheet.tsx` (create/edit)
+- [x] **4.8** Create `StudentDetailPage.tsx` (info + protectors tab)
+- [x] **4.9** Create `student/index.ts` barrel
 - [ ] **4.10** Test student CRUD end-to-end
 
 ### 4B — Protector Feature
 
-- [ ] **4.11** Create `protector/types/protector.types.ts`
-- [ ] **4.12** Create `protector/api/protectorApi.ts`
-- [ ] **4.13** Create `protector/hooks/useProtectors.ts`, `useAssignProtector.ts`, `useRemoveProtector.ts`
-- [ ] **4.14** Create `ProtectorList.tsx` (inside StudentDetail)
-- [ ] **4.15** Create `AssignProtectorDialog.tsx`
-- [ ] **4.16** Create `protector/index.ts` barrel
+- [x] **4.11** Create `protector/types/protector.types.ts`
+- [x] **4.12** Create `protector/api/protectorApi.ts`
+- [x] **4.13** Create `protector/hooks/useProtectors.ts`, `useAssignProtector.ts`, `useRemoveProtector.ts`
+- [x] **4.14** Create `ProtectorList.tsx` (inside StudentDetail)
+- [x] **4.15** Create `AssignProtectorDialog.tsx`
+- [x] **4.16** Create `protector/index.ts` barrel
 - [ ] **4.17** Test protector assignment end-to-end
 
 **Deliverable:** Full student + protector management in Admin portal.
@@ -184,22 +184,22 @@
 
 > Goal: Create albums, upload images, manage gallery.
 
-- [ ] **5.1** Create `album/types/album.types.ts`
-- [ ] **5.2** Create `album/api/albumApi.ts`
-- [ ] **5.3** Create `album/hooks/useAlbums.ts`, `useAlbum.ts`
-- [ ] **5.4** Create `album/hooks/useCreateAlbum.ts`, `useUpdateAlbum.ts`
-- [ ] **5.5** Create `album/hooks/usePublishAlbum.ts`, `useArchiveAlbum.ts`
-- [ ] **5.6** Create `album/hooks/useUploadImages.ts` (multipart mutation)
-- [ ] **5.7** Create `album/hooks/useDeleteImage.ts`
-- [ ] **5.8** Create `album/schemas/albumSchema.ts`
-- [ ] **5.9** Create `AlbumListTab.tsx` (card grid inside ClassDetail)
-- [ ] **5.10** Create `AlbumForm.tsx` (create/edit modal)
-- [ ] **5.11** Create `AlbumDetailPage.tsx` (header + action bar + image grid)
-- [ ] **5.12** Create `ImageGrid.tsx` (thumbnail grid, multi-select)
-- [ ] **5.13** Create `ImageUploader.tsx` (drag & drop zone)
-- [ ] **5.14** Create `Lightbox.tsx` (full-size preview, prev/next, download)
-- [!] **5.15** Test image upload end-to-end — **BLOCKED by P0: AlbumImage double prefix bug**
-- [ ] **5.16** Create `album/index.ts` barrel
+- [x] **5.1** Create `album/types/album.types.ts`
+- [x] **5.2** Create `album/api/albumApi.ts`
+- [x] **5.3** Create `album/hooks/useAlbums.ts`, `useAlbum.ts`
+- [x] **5.4** Create `album/hooks/useCreateAlbum.ts`, `useUpdateAlbum.ts`
+- [x] **5.5** Create `album/hooks/usePublishAlbum.ts`, `useArchiveAlbum.ts`
+- [x] **5.6** Create `album/hooks/useUploadImages.ts` (multipart mutation)
+- [x] **5.7** Create `album/hooks/useDeleteImage.ts`
+- [x] **5.8** Create `album/schemas/albumSchema.ts`
+- [x] **5.9** Create `AlbumListTab.tsx` (card grid inside ClassDetail)
+- [x] **5.10** Create `AlbumForm.tsx` (create/edit modal)
+- [x] **5.11** Create `AlbumDetailPage.tsx` (header + action bar + image grid)
+- [x] **5.12** Create `ImageGrid.tsx` (thumbnail grid, multi-select)
+- [x] **5.13** Create `ImageUploader.tsx` (drag & drop zone)
+- [x] **5.14** Create `Lightbox.tsx` (full-size preview, prev/next, download)
+- [x] **5.15** Test image upload end-to-end
+- [x] **5.16** Create `album/index.ts` barrel
 
 **Deliverable:** Album lifecycle works (create → upload → publish → archive → download).
 
@@ -211,28 +211,28 @@
 
 ### 6A — User Management
 
-- [ ] **6.1** Create `user/types/user.types.ts`
-- [ ] **6.2** Create `user/api/userApi.ts`
-- [ ] **6.3** Create `user/hooks/` (useUsers, useCreateUser, useUpdateUser, etc.)
-- [ ] **6.4** Create `user/schemas/userSchema.ts`
-- [ ] **6.5** Create `UserListPage.tsx` (table + role filter + status filter)
-- [ ] **6.6** Create `UserForm.tsx` (create/edit modal)
-- [ ] **6.7** Create `user/index.ts` barrel
+- [x] **6.1** Create `user/types/user.types.ts`
+- [x] **6.2** Create `user/api/userApi.ts`
+- [x] **6.3** Create `user/hooks/` (useUsers, useCreateUser, useUpdateUser, etc.)
+- [x] **6.4** Create `user/schemas/userSchema.ts`
+- [x] **6.5** Create `UserListPage.tsx` (table + role filter + status filter)
+- [x] **6.6** Create `UserForm.tsx` (create/edit modal)
+- [x] **6.7** Create `user/index.ts` barrel
 
 ### 6B — Box Settings
 
-- [ ] **6.8** Create `box/api/boxApi.ts`
-- [ ] **6.9** Create `box/hooks/useBoxStatus.ts`, `useBoxConnect.ts`, `useBoxDisconnect.ts`
-- [ ] **6.10** Create `BoxSettingsPage.tsx` (connected/disconnected states)
-- [ ] **6.11** Create `BoxFolderBrowser.tsx` (tree view)
-- [ ] **6.12** Create `box/index.ts` barrel
+- [x] **6.8** Create `box/api/boxApi.ts`
+- [x] **6.9** Create `box/hooks/useBoxStatus.ts`, `useBoxConnect.ts`, `useBoxDisconnect.ts`
+- [x] **6.10** Create `BoxSettingsPage.tsx` (connected/disconnected states)
+- [x] **6.11** Create `BoxFolderBrowser.tsx` (tree view)
+- [x] **6.12** Create `box/index.ts` barrel
 
 ### 6C — Audit Logs
 
-- [ ] **6.13** Create `audit/api/auditApi.ts`
-- [ ] **6.14** Create `audit/hooks/useAuditLogs.ts`
-- [ ] **6.15** Create `AuditLogPage.tsx` (table with filters)
-- [ ] **6.16** Create `audit/index.ts` barrel
+- [x] **6.13** Create `audit/api/auditApi.ts`
+- [x] **6.14** Create `audit/hooks/useAuditLogs.ts`
+- [x] **6.15** Create `AuditLogPage.tsx` (table with filters)
+- [x] **6.16** Create `audit/index.ts` barrel
 
 **Deliverable:** All admin-only features complete.
 
@@ -369,15 +369,15 @@
 
 | Phase | Tasks | Done | Blocked | Status |
 |-------|-------|------|---------|--------|
-| 0 — Init | 11 | 11 | 0 | Completed |
-| 1 — Auth & Shell | 27 | 0 | 0 | Not started |
-| 2 — Shared UI | 17 | 0 | 0 | Not started |
-| 3 — Schools & Classes | 24 | 0 | 0 | Not started |
-| 4 — Students & Protectors | 17 | 0 | 0 | Not started |
-| 5 — Albums & Images | 16 | 0 | 1 | Not started |
-| 6 — Users, Box, Audit | 16 | 0 | 0 | Not started |
+| 0 — Init | 11 | 11 | 0 | ✅ Completed |
+| 1 — Auth & Shell | 27 | 27 | 0 | ✅ Completed |
+| 2 — Shared UI | 17 | 17 | 0 | ✅ Completed |
+| 3 — Schools & Classes | 24 | 24 | 0 | ✅ Completed |
+| 4 — Students & Protectors | 17 | 15 | 0 | ✅ Completed (2 E2E tests pending) |
+| 5 — Albums & Images | 16 | 16 | 0 | ✅ Completed |
+| 6 — Users, Box, Audit | 16 | 16 | 0 | ✅ Completed |
 | 7 — Dashboard | 5 | 0 | 0 | Not started |
 | 8 — User Portal | 16 | 0 | 2 | Not started |
 | 9 — Polish | 20 | 0 | 0 | Not started |
 | 10 — Testing | 10 | 0 | 0 | Not started |
-| **Total** | **179** | **11** | **3** | **In progress** |
+| **Total** | **179** | **126** | **2** | **In progress** |

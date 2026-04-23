@@ -1,17 +1,33 @@
-import React from "react";
+import { Navigate, useRoutes } from "react-router-dom";
+import { authRoutes } from "@/app/routes/auth.routes";
+import { adminRoutes } from "@/app/routes/admin.routes";
+import { portalRoutes } from "@/app/routes/portal.routes";
+import { NotFoundPage } from "@/app/pages/NotFoundPage";
+import { useAuthStore } from "@/features/auth";
+import { ROLE_REDIRECT } from "@/shared/constants/roles";
+import { ROUTES } from "@/shared/constants/routes";
+
+function RootRedirect() {
+  const { user, sessionToken } = useAuthStore();
+
+  if (!sessionToken) {
+    return <Navigate to={ROUTES.LOGIN} replace />;
+  }
+  if (user) {
+    return <Navigate to={ROLE_REDIRECT[user.role]} replace />;
+  }
+  // Token exists but user not loaded yet — AuthGuard will handle
+  return <Navigate to={ROUTES.ADMIN.ROOT} replace />;
+}
 
 export function App() {
-  return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
-      <div className="bg-card p-8 rounded-xl shadow-lg border border-border text-center max-w-md w-full">
-        <h1 className="text-3xl font-bold text-primary-600 mb-4 tracking-tight">
-          School Box Portal
-        </h1>
-        <p className="text-muted-foreground mb-6">
-          Vite + React + Tailwind v4 + shadcn/ui Foundation is ready.
-        </p>
-        <div className="skeleton h-4 w-3/4 mx-auto rounded"></div>
-      </div>
-    </div>
-  );
+  const element = useRoutes([
+    { path: "/", element: <RootRedirect /> },
+    authRoutes,
+    adminRoutes,
+    portalRoutes,
+    { path: "*", element: <NotFoundPage /> },
+  ]);
+
+  return element;
 }

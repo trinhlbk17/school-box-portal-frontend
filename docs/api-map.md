@@ -149,6 +149,19 @@
 
 ---
 
+## Box Integration (`/api/box`) — Admin only
+
+| Method | Endpoint | Roles | Description |
+|--------|----------|-------|--------|
+| GET | `/box/status` | ADMIN | Check Box.com connection status |
+| GET | `/box/auth-url` | ADMIN | Get OAuth authorization URL |
+| DELETE | `/box/disconnect` | ADMIN | Disconnect Box integration |
+| GET | `/box/folders/:folderId/items` | ADMIN | List items in a Box folder (optional `?itemType=folder|file`) |
+
+**OAuth callback**: Backend redirects to `${FRONTEND_URL}/admin/settings/box?box_connected=true` after successful authorization.
+
+---
+
 ## Audit (`/api/audit`) — Admin only
 
 | Method | Endpoint | Roles | Description |

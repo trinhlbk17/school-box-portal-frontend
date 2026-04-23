@@ -1,122 +1,97 @@
 # Backend Gaps & Issues — Needs Fixing Before Frontend Integration
 
-> Discovered during frontend UX exploration (2026-04-21)
+> Source: `school-box-portal-backend/src/**/*.controller.ts`
+> Last verified: 2026-04-22 (from live source code)
 
 ---
 
-## 🔴 Critical: AlbumImageController Double Prefix Bug
+## ✅ RESOLVED: AlbumImageController Double Prefix Bug
 
-**File:** `src/album/album-image.controller.ts`
-
-**Problem:** Controller routes have a hardcoded `api/` prefix:
-```typescript
-@Post('api/albums/:id/images')     // line 44
-@Delete('api/album-images/:id')    // line 119
-@Get('api/album-images/:id/thumbnail')  // line 128
-@Get('api/album-images/:id/preview')    // line 137
-@Get('api/album-images/:id/download')   // line 147
-```
-
-But `main.ts` line 31 already sets `app.setGlobalPrefix('api')`.
-
-**Result:** Actual routes will be `/api/api/albums/:id/images` — which is incorrect.
-
-**Fix:** Remove `api/` prefix from decorator routes:
-```typescript
-@Post('albums/:id/images')
-@Delete('album-images/:id')
-@Get('album-images/:id/thumbnail')
-@Get('album-images/:id/preview')
-@Get('album-images/:id/download')
-```
+**Status:** Fixed.
+`album-image.controller.ts` now uses `@Controller()` without prefix.
+Routes `@Post('albums/:id/images')`, `@Delete('album-images/:id')`, etc. are correct.
 
 ---
 
-## 🟡 Missing: SharedFolder Controller
+## ✅ RESOLVED: Missing TEACHER permission for creating Albums
 
-**Status:** Service exists (`shared-folder.service.ts`) but **no Controller**.
-
-**Impact:** Frontend cannot call API to:
-- List shared folders for school/class
-- Browse contents of a shared folder
-- Download files from a shared folder
-
-**Needed endpoints:**
-| Method | Endpoint | Roles | Description |
-|--------|----------|-------|--------|
-| GET | `/shared-folders?schoolId=X&classId=Y` | All | List shared folders |
-| GET | `/shared-folders/:id/contents` | All (scope-filtered) | Browse folder contents |
-| GET | `/shared-folders/:id/files/:fileId/download` | All | Download file |
-
-**Temporary Workaround:** Hide the "Shared Folders" tab in the User Portal until the backend is implemented.
+**Status:** Fixed.
+`album.controller.ts` line 51: `@Roles(UserRole.ADMIN, UserRole.TEACHER)` — Teachers can now create albums.
 
 ---
 
-## 🟡 Missing: Student "Me" Endpoint
+## 🟡 P1: SharedFolder controller missing
 
-**Problem:** After Student login, we need to get `studentProfileId` to navigate.
-Currently, we have to call `/auth/me` and hope the response contains `studentProfile.id`.
+**Problem:** `SharedFolder` model exists in Prisma schema but no REST controller exposes it.
 
-**Need to verify:** Does `GET /api/auth/me` return the `studentProfile` relation?
+**Impact:** Cannot build the "Shared Folders" tab for students in the portal.
 
-**If not**, a new endpoint is needed:
-```
-GET /api/students/me → returns StudentProfile of the current user
-```
+**Fix:** Backend needs to implement `SharedFolderController` with list/create/delete endpoints.
+
+**Frontend workaround:** Hide the Shared Folders tab entirely until backend is ready.
 
 ---
 
-## 🟡 Missing: Dashboard Stats Endpoint
+## 🟡 P1: Student `/me` endpoint — verify response format
 
-**Problem:** Dashboard needs aggregate stats (total schools, classes, students, albums).
-Currently, we have to call multiple list endpoints and count them.
+**Problem:** Students and Protectors use OTP login and call `GET /auth/me`. Need to confirm the response includes `studentProfile` (with `classId`) for students.
 
-**Nice to have:**
-```
-GET /api/dashboard/stats → { schools: 5, classes: 20, students: 450, albums: 30 }
-```
+**Impact:** Portal routing depends on knowing which class a student belongs to.
 
-**Workaround:** Frontend aggregates manually from list endpoints (not ideal but acceptable).
+**Fix:** Verify `GET /auth/me` response shape includes nested profile data.
 
 ---
 
-## 🟡 Folder Browsing for Non-Admin Roles
+## 🟡 P2: Dashboard stats endpoint missing
 
-**Problem:** `GET /api/box/folders/:folderId/items` is restricted to ADMIN only.
-Students/Protectors need to browse Box folders (Subjects, Grades, Activities).
+**Problem:** No `GET /dashboard/stats` endpoint. Dashboard needs counts (total schools, classes, students, albums).
 
-**Options:**
-1. Expand roles for the existing endpoint (add STUDENT, PROTECTOR)
-2. Create a new endpoint in StudentController: `GET /api/students/:id/folders/:type/contents`
+**Impact:** Dashboard page cannot show aggregate statistics.
 
-**Option 2 is safer** because it validates access rights to the student profile before allowing browsing.
+**Frontend workaround:** Aggregate counts from individual list endpoints (`GET /schools`, etc.) or show "Coming soon" for stats.
 
 ---
 
-## 🟢 Info: Change Password Flow
+## 🟡 P2: Folder browsing restricted to ADMIN
 
-**Current backend flow:**
-1. `POST /api/auth/password-change-request` → sends OTP via email
-2. `PUT /api/auth/password-change` → verifies OTP + changes password
+**Problem:** `GET /box/folders/:folderId/items` is ADMIN-only. Students/Protectors cannot browse their Box folders.
 
-**User requirement:** Avoid sending emails.
+**Impact:** Student document folders tab in portal won't work for non-admin users.
 
-**Options:**
-1. Backend adds an endpoint to change password using the old password (without OTP)
-2. Temporarily hide the Change Password feature
-3. Implement it but disable the send OTP button (Poor UX)
+**Frontend workaround:** Hide the student folders tab for portal users. Show only for Admin in admin portal.
 
-**Recommendation:** Temporarily hide Change Password in the frontend. Enable it when the backend is ready to send emails.
+---
+
+## 🟢 P3: Change Password requires OTP email
+
+**Problem:** Password change flow requires OTP email (`POST /auth/password-change-request` → `PUT /auth/password-change`). No direct password change using current password is available.
+
+**Frontend workaround:** Temporarily hide Change Password in the portal. Enable when email sending is ready.
+
+---
+
+## 📝 API Behavior Notes (for Frontend reference)
+
+| Endpoint | Note |
+|----------|------|
+| `POST /schools` | **Max 1 school** — Backend throws `SCHOOL_LIMIT_REACHED` if a school already exists |
+| `GET /schools` | Returns all schools (no pagination) |
+| `GET /schools/:schoolId/classes` | Returns all classes (no pagination). Teachers auto-filtered to assigned classes only |
+| `GET /classes/:id` | Includes `classTeachers[]` in response (no separate endpoint needed) |
+| `DELETE /classes/:id` | **Hard delete** — no soft delete, cascades should be verified |
+| `DELETE /schools/:id` | **Hard delete** — no soft delete |
+| `POST /classes/:id/promote` | Batch promote students to another class (Admin only) |
 
 ---
 
 ## Summary Priority
 
-| Priority | Issue | Action |
+| Priority | Issue | Status |
 |----------|-------|--------|
-| 🔴 P0 | AlbumImage double prefix | Fix backend immediately |
-| 🟡 P1 | SharedFolder controller | Backend implement later, FE hides tab |
+| ~~🔴 P0~~ | ~~AlbumImage double prefix~~ | ✅ Resolved |
+| ~~🟡 P1~~ | ~~Teacher Album Creation~~ | ✅ Resolved |
+| 🟡 P1 | SharedFolder controller | Backend: implement later, FE hides tab |
 | 🟡 P1 | Student /me endpoint | Verify /auth/me response format |
 | 🟡 P2 | Dashboard stats | FE workaround acceptable |
-| 🟡 P2 | Folder browsing roles | Backend implement later, FE hides tab |
+| 🟡 P2 | Folder browsing roles | Backend: implement later, FE hides tab |
 | 🟢 P3 | Change Password | Temporarily hide feature |
