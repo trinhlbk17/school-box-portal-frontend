@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { PageHeader } from "@/shared/components/PageHeader";
 import { DataTable } from "@/shared/components/DataTable";
 import { ConfirmDialog } from "@/shared/components/ConfirmDialog";
+import { EmptyState } from "@/shared/components/EmptyState";
 import { ErrorAlert } from "@/shared/components/ErrorAlert";
 import { Button } from "@/shared/components/ui/button";
 import { Badge } from "@/shared/components/ui/badge";
@@ -16,7 +17,7 @@ import {
   SelectValue,
 } from "@/shared/components/ui/select";
 import { ROLES } from "@/shared/constants/roles";
-import { useAuthStore } from "@/features/auth/store/authStore";
+import { useAuthStore } from "@/features/auth";
 import { useUsers } from "@/features/user/hooks/useUsers";
 import {
   useCreateUser,
@@ -105,33 +106,49 @@ export function UserListPage() {
     password: string;
     plainPassword: string;
   }) => {
-    await createUser.mutateAsync({
-      email: payload.email,
-      name: payload.name,
-      role: payload.role as AdminUser["role"],
-      password: payload.password,
-    });
-    setIsCreateOpen(false);
-    setRevealPassword({ password: payload.plainPassword, userName: payload.name });
-    toast.success("User created successfully");
+    try {
+      await createUser.mutateAsync({
+        email: payload.email,
+        name: payload.name,
+        role: payload.role as AdminUser["role"],
+        password: payload.password,
+      });
+      setIsCreateOpen(false);
+      setRevealPassword({ password: payload.plainPassword, userName: payload.name });
+      // Toast success is handled in the mutation hook
+    } catch (error) {
+      console.error("Failed to create user", error);
+    }
   };
 
   const handleUpdate = async (values: { email: string; name: string }) => {
     if (!editTarget) return;
-    await updateUser.mutateAsync({ id: editTarget.id, data: values });
-    setEditTarget(null);
+    try {
+      await updateUser.mutateAsync({ id: editTarget.id, data: values });
+      setEditTarget(null);
+    } catch (error) {
+      console.error("Failed to update user", error);
+    }
   };
 
   const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
-    await deleteUser.mutateAsync(deleteTarget.id);
-    setDeleteTarget(null);
+    try {
+      await deleteUser.mutateAsync(deleteTarget.id);
+      setDeleteTarget(null);
+    } catch (error) {
+      console.error("Failed to delete user", error);
+    }
   };
 
   const handleConfirmDeactivate = async () => {
     if (!deactivateTarget) return;
-    await deactivateUser.mutateAsync(deactivateTarget.id);
-    setDeactivateTarget(null);
+    try {
+      await deactivateUser.mutateAsync(deactivateTarget.id);
+      setDeactivateTarget(null);
+    } catch (error) {
+      console.error("Failed to deactivate user", error);
+    }
   };
 
   const handleActivate = (user: AdminUser) => {
@@ -139,8 +156,12 @@ export function UserListPage() {
   };
 
   const handleRegeneratePassword = async (user: AdminUser) => {
-    const result = await regeneratePassword.mutateAsync(user.id);
-    setRevealPassword({ password: result.temporaryPassword, userName: user.name });
+    try {
+      const result = await regeneratePassword.mutateAsync(user.id);
+      setRevealPassword({ password: result.temporaryPassword, userName: user.name });
+    } catch (error) {
+      console.error("Failed to regenerate password", error);
+    }
   };
 
   const columns: ColumnDef<AdminUser>[] = [
@@ -299,7 +320,7 @@ export function UserListPage() {
             <Select
               value={roleFilter}
               onValueChange={(val) => {
-                setRoleFilter(val);
+                setRoleFilter(val || "");
                 handleFilterChange();
               }}
             >
@@ -324,7 +345,7 @@ export function UserListPage() {
             <Select
               value={statusFilter}
               onValueChange={(val) => {
-                setStatusFilter(val);
+                setStatusFilter(val || "");
                 handleFilterChange();
               }}
             >
@@ -371,17 +392,26 @@ export function UserListPage() {
         </div>
       </div>
 
-      <DataTable
-        columns={columns}
-        data={users}
-        isLoading={isLoading}
-        totalCount={total}
-        page={page}
-        pageSize={PAGE_SIZE}
-        onPageChange={setPage}
-        onSearch={handleSearchChange}
-        searchPlaceholder="Search by name or email..."
-      />
+      {!isLoading && users.length === 0 && !search && !roleFilter && !statusFilter ? (
+        <EmptyState
+          title="No users found"
+          description="Get started by creating the first user account."
+          icon={<UserPlus className="h-6 w-6 text-neutral-500" />}
+          action={{ label: "Add User", onClick: () => setIsCreateOpen(true) }}
+        />
+      ) : (
+        <DataTable
+          columns={columns}
+          data={users}
+          isLoading={isLoading}
+          totalCount={total}
+          page={page}
+          pageSize={PAGE_SIZE}
+          onPageChange={setPage}
+          onSearch={handleSearchChange}
+          searchPlaceholder="Search by name or email..."
+        />
+      )}
 
       {/* Dialogs */}
       <CreateUserDialog

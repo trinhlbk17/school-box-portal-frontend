@@ -6,7 +6,8 @@ import { NotFoundPage } from "@/app/pages/NotFoundPage";
 import { useAuthStore } from "@/features/auth";
 import { ROLE_REDIRECT } from "@/shared/constants/roles";
 import { ROUTES } from "@/shared/constants/routes";
-
+import { ErrorBoundary } from "react-error-boundary";
+import { ServerErrorPage } from "@/app/pages/ServerErrorPage";
 function RootRedirect() {
   const { user, sessionToken } = useAuthStore();
 
@@ -29,5 +30,9 @@ export function App() {
     { path: "*", element: <NotFoundPage /> },
   ]);
 
-  return element;
+  return (
+    <ErrorBoundary FallbackComponent={({ error }) => <ServerErrorPage error={error} />}>
+      {element}
+    </ErrorBoundary>
+  );
 }

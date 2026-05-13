@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Folder,
   File,
@@ -59,13 +60,21 @@ export function BoxFolderBrowser({
   const [selectedItem, setSelectedItem] = useState<BoxFolderItem | null>(null);
 
   const currentFolder = folderStack[folderStack.length - 1];
+  const navigate = useNavigate();
 
   const { data, isLoading, error } = useBoxFolderItems(
     isOpen ? currentFolder.id : "",
     foldersOnly ? "folder" : undefined
   );
 
-  const items = data?.items ?? [];
+  // The backend might return an array directly depending on the API design wrapper
+  let items: BoxFolderItem[] = [];
+  if (Array.isArray(data)) {
+    items = data;
+  } else if (data && typeof data === "object") {
+    const dataRecord = data as Record<string, unknown>;
+    items = (dataRecord.items ?? dataRecord.entries ?? dataRecord.data ?? []) as BoxFolderItem[];
+  }
 
   const handleFolderClick = (item: BoxFolderItem) => {
     if (item.type !== "folder") return;
@@ -98,7 +107,7 @@ export function BoxFolderBrowser({
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
       <DialogContent className="sm:max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Browse Box Files</DialogTitle>
+          <DialogTitle>Browse Box Items</DialogTitle>
           <DialogDescription>
             {foldersOnly
               ? "Select a folder from Box.com."
@@ -136,11 +145,22 @@ export function BoxFolderBrowser({
               <Loader2 className="h-6 w-6 animate-spin text-neutral-400" />
             </div>
           ) : error ? (
-            <div className="p-4">
+            <div className="p-4 flex flex-col items-center justify-center py-10 gap-4">
               <ErrorAlert
                 title="Failed to load folder"
-                message={(error as { message: string }).message}
+                message={(error as { statusCode?: number; message: string })?.statusCode === 503 ? "Please check the Box Connection" : (error as { message: string }).message}
               />
+              {(error as { statusCode?: number })?.statusCode === 503 && (
+                <Button 
+                  variant="outline" 
+                  onClick={() => {
+                    handleClose();
+                    navigate("/admin/settings/box");
+                  }}
+                >
+                  Go to Box Settings
+                </Button>
+              )}
             </div>
           ) : items.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-neutral-400">

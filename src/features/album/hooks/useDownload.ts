@@ -1,10 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
 import { albumApi } from "../api/albumApi";
-import { useToast } from "@/shared/hooks/use-toast";
+import { toast } from "sonner";
 
 export function useDownloadImage() {
-  const { toast } = useToast();
-
   return useMutation({
     mutationFn: async ({
       imageId,
@@ -24,18 +22,14 @@ export function useDownloadImage() {
       URL.revokeObjectURL(url);
     },
     onError: (error: unknown) => {
-      toast({
-        title: "Download Failed",
+      toast.error("Download Failed", {
         description: error instanceof Error ? error.message : "Failed to download the image.",
-        variant: "destructive",
       });
     },
   });
 }
 
 export function useDownloadAlbumZip() {
-  const { toast } = useToast();
-
   return useMutation({
     mutationFn: async ({
       albumId,
@@ -55,10 +49,8 @@ export function useDownloadAlbumZip() {
       URL.revokeObjectURL(url);
     },
     onError: (error: unknown) => {
-      toast({
-        title: "Download Failed",
+      toast.error("Download Failed", {
         description: error instanceof Error ? error.message : "Failed to download the album ZIP.",
-        variant: "destructive",
       });
     },
   });

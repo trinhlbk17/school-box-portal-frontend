@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import CryptoJS from "crypto-js";
 import { authApi } from "@/features/auth/api/authApi";
 import { useAuthStore } from "@/features/auth/stores/useAuthStore";
 import { ROLE_REDIRECT } from "@/shared/constants/roles";
@@ -20,7 +21,10 @@ export function useLogin() {
     AppError,
     LoginInput
   >({
-    mutationFn: ({ email, password }) => authApi.login({ email, password }),
+    mutationFn: ({ email, password }) => authApi.login({ 
+      email, 
+      password: CryptoJS.MD5(password).toString() 
+    }),
     onSuccess: (data, variables) => {
       setSession(data.user, data.sessionToken, variables.rememberMe);
       queryClient.setQueryData(["auth", "me"], data.user);

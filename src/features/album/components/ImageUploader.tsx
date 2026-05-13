@@ -1,10 +1,11 @@
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
+import type { AxiosProgressEvent } from "axios";
 import { UploadCloud, X, FileImage } from "lucide-react";
 import { useUploadImages } from "../hooks/useImageMutations";
 import { Button } from "@/shared/components/ui/button";
 import { Progress } from "@/shared/components/ui/progress";
-import { useToast } from "@/shared/hooks/use-toast";
+import { toast } from "sonner";
 
 interface ImageUploaderProps {
   albumId: string;
@@ -16,16 +17,14 @@ export function ImageUploader({ albumId, onUploadSuccess }: ImageUploaderProps) 
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
 
-  const { toast } = useToast();
+
   const uploadMutation = useUploadImages();
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
       if (selectedFiles.length + acceptedFiles.length > 20) {
-        toast({
-          title: "Too many files",
+        toast.error("Too many files", {
           description: "You can only upload up to 20 images at once.",
-          variant: "destructive",
         });
         const allowedSpace = 20 - selectedFiles.length;
         if (allowedSpace > 0) {
@@ -35,7 +34,7 @@ export function ImageUploader({ albumId, onUploadSuccess }: ImageUploaderProps) 
       }
       setSelectedFiles((prev) => [...prev, ...acceptedFiles]);
     },
-    [selectedFiles.length, toast]
+    [selectedFiles.length]
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -63,7 +62,7 @@ export function ImageUploader({ albumId, onUploadSuccess }: ImageUploaderProps) 
       await uploadMutation.mutateAsync({
         albumId,
         files: selectedFiles,
-        onUploadProgress: (progressEvent) => {
+        onUploadProgress: (progressEvent: AxiosProgressEvent) => {
           const progress = progressEvent.total
             ? Math.round((progressEvent.loaded * 100) / progressEvent.total)
             : 0;
@@ -74,8 +73,7 @@ export function ImageUploader({ albumId, onUploadSuccess }: ImageUploaderProps) 
       setSelectedFiles([]);
       setUploadProgress(0);
       onUploadSuccess?.();
-      toast({
-        title: "Upload Successful",
+      toast.success("Upload Successful", {
         description: `Successfully uploaded ${selectedFiles.length} images.`,
       });
     } catch {

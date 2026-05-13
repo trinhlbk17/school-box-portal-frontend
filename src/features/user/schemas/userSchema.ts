@@ -6,8 +6,8 @@ export const createUserSchema = z
     email: z.string().email("Please enter a valid email"),
     name: z.string().min(2, "Name must be at least 2 characters"),
     role: z.enum(
-      [ROLES.ADMIN, ROLES.TEACHER, ROLES.STUDENT, ROLES.PROTECTOR],
-      { required_error: "Please select a role" }
+      [ROLES.ADMIN, ROLES.TEACHER, ROLES.STUDENT, ROLES.PROTECTOR] as const,
+      { message: "Please select a role" }
     ),
     passwordMode: z.enum(["auto", "manual"]),
     password: z.string().optional(),

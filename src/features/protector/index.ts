@@ -18,6 +18,7 @@ export {
   useAssignProtector,
   useRemoveProtector,
 } from "./hooks/useProtectors";
+export { useMyStudents } from "./hooks/useMyStudents";
 
 // Components
 export { ProtectorList } from "./components/ProtectorList";

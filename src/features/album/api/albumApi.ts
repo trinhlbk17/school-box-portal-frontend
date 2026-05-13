@@ -1,5 +1,5 @@
 import { apiClient } from "@/shared/lib/apiClient";
-import {
+import type {
   Album,
   AlbumImage,
   AlbumListParams,
@@ -82,7 +82,7 @@ export const albumApi = {
     // Let me check if GET /albums/:id returns images. It typically does or there's a separate endpoint.
     // I will add getAlbumImages just in case, or maybe the album object contains it.
     // Actually, let's implement GET /api/albums/:id/images
-    const response = await apiClient.get<SingleResponse<AlbumImage[]>>(`/api/albums/${albumId}/images`);
+    const response = await apiClient.get<SingleResponse<AlbumImage[]>>(`/albums/${albumId}/images`);
     return response.data.data;
   },
 
@@ -97,7 +97,7 @@ export const albumApi = {
     });
 
     const response = await apiClient.post<SingleResponse<AlbumImage[]>>(
-      `/api/albums/${albumId}/images`,
+      `/albums/${albumId}/images`,
       formData,
       {
         headers: {
@@ -111,13 +111,13 @@ export const albumApi = {
   },
 
   deleteImage: async (imageId: string): Promise<void> => {
-    await apiClient.delete(`/api/album-images/${imageId}`);
+    await apiClient.delete(`/album-images/${imageId}`);
   },
 
   // These return Blobs for image preview/download
   getThumbnail: async (imageId: string): Promise<Blob> => {
     const response = await apiClient.get<Blob>(
-      `/api/album-images/${imageId}/thumbnail`,
+      `/album-images/${imageId}/thumbnail`,
       { responseType: "blob" },
     );
     return response.data;
@@ -125,7 +125,7 @@ export const albumApi = {
 
   getPreview: async (imageId: string): Promise<Blob> => {
     const response = await apiClient.get<Blob>(
-      `/api/album-images/${imageId}/preview`,
+      `/album-images/${imageId}/preview`,
       { responseType: "blob" },
     );
     return response.data;
@@ -133,7 +133,7 @@ export const albumApi = {
 
   downloadImage: async (imageId: string): Promise<Blob> => {
     const response = await apiClient.get<Blob>(
-      `/api/album-images/${imageId}/download`,
+      `/album-images/${imageId}/download`,
       { responseType: "blob" },
     );
     return response.data;

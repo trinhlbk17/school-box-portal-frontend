@@ -12,11 +12,14 @@ import { useSchools, useDeleteSchool } from "@/features/school/hooks/useSchools"
 import type { School } from "@/features/school/types/school.types";
 import { ROUTES } from "@/shared/constants/routes";
 import type { ColumnDef } from "@/shared/types/dataTable.types";
+import { useDelayedLoading } from "@/shared/hooks/useDelayedLoading";
 
 export function SchoolListPage() {
   const navigate = useNavigate();
-  const { data: schools = [], isLoading, error } = useSchools();
+  const { data, isLoading, error } = useSchools();
+  const schools = Array.isArray(data) ? data : [];
   const deleteSchool = useDeleteSchool();
+  const showLoading = useDelayedLoading(isLoading, 300);
 
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<School | null>(null);
@@ -131,7 +134,7 @@ export function SchoolListPage() {
         <DataTable
           columns={columns}
           data={schools}
-          isLoading={isLoading}
+          isLoading={showLoading}
           totalCount={schools.length}
           searchPlaceholder="Search schools..."
         />

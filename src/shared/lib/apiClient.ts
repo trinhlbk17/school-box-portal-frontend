@@ -11,10 +11,9 @@ export const apiClient = axios.create({
 });
 
 /** Request interceptor — injects x-session-id from auth store. */
-apiClient.interceptors.request.use((config) => {
+apiClient.interceptors.request.use(async (config) => {
   // Lazy import to avoid circular dependency
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { useAuthStore } = require("@/features/auth/stores/useAuthStore");
+  const { useAuthStore } = await import("@/features/auth/stores/useAuthStore");
   const token: string | null = useAuthStore.getState().sessionToken;
   if (token) {
     config.headers["x-session-id"] = token;
@@ -26,10 +25,10 @@ apiClient.interceptors.request.use((config) => {
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (error.response?.status === 401) {
+    // Do not trigger auto-logout if the 401 is from the login endpoint itself
+    if (error.response?.status === 401 && !error.config?.url?.includes("/auth/login")) {
       // Lazy import to avoid circular dependency
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const { useAuthStore } = require("@/features/auth/stores/useAuthStore");
+      const { useAuthStore } = await import("@/features/auth/stores/useAuthStore");
       useAuthStore.getState().logout();
       window.location.href = "/login";
     }

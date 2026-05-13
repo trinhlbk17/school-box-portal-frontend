@@ -1,11 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { albumApi } from "../api/albumApi";
 import { albumQueryKeys } from "./useAlbums";
-import { useToast } from "@/shared/hooks/use-toast";
+import { toast } from "sonner";
 
 export function useUploadImages() {
   const queryClient = useQueryClient();
-  const { toast } = useToast();
 
   return useMutation({
     mutationFn: ({
@@ -26,10 +25,8 @@ export function useUploadImages() {
       });
     },
     onError: (error: unknown) => {
-      toast({
-        title: "Upload Failed",
+      toast.error("Upload Failed", {
         description: error instanceof Error ? error.message : "Failed to upload images.",
-        variant: "destructive",
       });
     },
   });

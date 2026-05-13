@@ -14,6 +14,10 @@ interface AuthActions {
   logout: () => void;
   /** Called on app boot to restore token from storage. */
   loadFromStorage: () => string | null;
+  /** Returns true if the current user has the ADMIN role. */
+  isAdmin: () => boolean;
+  /** Returns true if the current user has the TEACHER role. */
+  isTeacher: () => boolean;
 }
 
 const getStoredToken = (): string | null =>
@@ -24,7 +28,7 @@ const clearStoredToken = () => {
   sessionStorage.removeItem(SESSION_KEY);
 };
 
-export const useAuthStore = create<AuthState & AuthActions>((set) => ({
+export const useAuthStore = create<AuthState & AuthActions>((set, get) => ({
   user: null,
   sessionToken: null,
   rememberMe: false,
@@ -50,4 +54,8 @@ export const useAuthStore = create<AuthState & AuthActions>((set) => ({
     }
     return token;
   },
+
+  isAdmin: () => get().user?.role === 'ADMIN',
+
+  isTeacher: () => get().user?.role === 'TEACHER',
 }));

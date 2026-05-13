@@ -14,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/components/ui
 import { PageHeader } from "@/shared/components/PageHeader";
 import { ConfirmDialog } from "@/shared/components/ConfirmDialog";
 import { ErrorAlert } from "@/shared/components/ErrorAlert";
+import { FeatureErrorBoundary } from "@/shared/components/FeatureErrorBoundary";
 import { StudentFormSheet } from "@/features/student/components/StudentFormSheet";
 import { useStudent, useDeleteStudent } from "@/features/student/hooks/useStudents";
 import { ProtectorList } from "@/features/protector/components/ProtectorList";
@@ -170,7 +171,9 @@ export function StudentDetailPage() {
         </TabsList>
 
         <TabsContent value="protectors" className="mt-6">
-          <ProtectorList studentId={id!} />
+          <FeatureErrorBoundary>
+            <ProtectorList studentId={id!} />
+          </FeatureErrorBoundary>
         </TabsContent>
       </Tabs>
 

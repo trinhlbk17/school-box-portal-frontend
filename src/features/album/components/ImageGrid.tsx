@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { AlbumImage } from "../types/album.types";
+import type { AlbumImage } from "../types/album.types";
 import { useImageUrl } from "../hooks/useImageUrl";
 import { Skeleton } from "@/shared/components/ui/skeleton";
 import { Checkbox } from "@/shared/components/ui/checkbox";
@@ -11,6 +11,7 @@ import { Lightbox } from "./Lightbox";
 interface ImageGridProps {
   images: AlbumImage[];
   isAdmin: boolean;
+  readonly?: boolean;
   onDeleteSelected?: (imageIds: string[]) => void;
   onDownloadSelected?: (imageIds: string[]) => void;
 }
@@ -19,11 +20,13 @@ interface ImageGridProps {
 function ThumbnailCard({
   image,
   isSelected,
+  readonly,
   onToggleSelect,
   onClick,
 }: {
   image: AlbumImage;
   isSelected: boolean;
+  readonly?: boolean;
   onToggleSelect: (id: string) => void;
   onClick: () => void;
 }) {
@@ -53,19 +56,22 @@ function ThumbnailCard({
           isSelected ? "opacity-100" : "opacity-0 group-hover:opacity-100"
         }`}
         onClick={(e) => {
+          if (readonly) return;
           // Prevent triggering the Lightbox if clicking the overlay but not the checkbox
           if ((e.target as HTMLElement).closest("button[role='checkbox']")) return;
           // Optionally toggle selection on overlay click
           onToggleSelect(image.id);
         }}
       >
-        <div className="absolute top-2 left-2">
-          <Checkbox
-            checked={isSelected}
-            onCheckedChange={() => onToggleSelect(image.id)}
-            className="border-white data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
-          />
-        </div>
+        {!readonly && (
+          <div className="absolute top-2 left-2">
+            <Checkbox
+              checked={isSelected}
+              onCheckedChange={() => onToggleSelect(image.id)}
+              className="border-white data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
+            />
+          </div>
+        )}
         <div className="absolute bottom-2 left-2 right-2 text-xs text-white truncate pointer-events-none drop-shadow-md">
           {image.originalName}
         </div>
@@ -80,6 +86,7 @@ function ThumbnailCard({
 export function ImageGrid({
   images,
   isAdmin,
+  readonly = false,
   onDeleteSelected,
   onDownloadSelected,
 }: ImageGridProps) {
@@ -170,6 +177,7 @@ export function ImageGrid({
             key={img.id}
             image={img}
             isSelected={selectedIds.has(img.id)}
+            readonly={readonly}
             onToggleSelect={handleToggleSelect}
             onClick={() => setLightboxIndex(index)}
           />
@@ -183,6 +191,7 @@ export function ImageGrid({
         index={lightboxIndex}
         setIndex={setLightboxIndex}
         imageIds={images.map((i) => i.id)}
+        readonly={readonly}
       />
     </div>
   );

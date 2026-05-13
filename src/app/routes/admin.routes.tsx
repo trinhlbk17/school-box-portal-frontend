@@ -5,6 +5,7 @@ import { lazy, Suspense } from "react";
 import { AuthGuard } from "@/app/guards/AuthGuard";
 import { AdminGuard } from "@/app/guards/AdminGuard";
 import { AdminLayout } from "@/app/layouts/AdminLayout";
+import { FeatureErrorBoundary } from "@/shared/components/FeatureErrorBoundary";
 
 const AdminDashboard = lazy(() =>
   import("@/app/pages/admin/AdminDashboardPage").then((m) => ({
@@ -74,9 +75,11 @@ const PageLoader = () => (
 );
 
 const wrap = (Page: React.ComponentType) => (
-  <Suspense fallback={<PageLoader />}>
-    <Page />
-  </Suspense>
+  <FeatureErrorBoundary>
+    <Suspense fallback={<PageLoader />}>
+      <Page />
+    </Suspense>
+  </FeatureErrorBoundary>
 );
 
 export const adminRoutes: RouteObject = {

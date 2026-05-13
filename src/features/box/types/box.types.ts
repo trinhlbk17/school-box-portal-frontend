@@ -1,7 +1,7 @@
 export interface BoxStatus {
-  connected: boolean;
+  isConnected: boolean;
   boxUserId?: string;
-  tokenExpiry?: string;
+  expiresAt?: string;
 }
 
 export interface BoxAuthUrl {

@@ -1,4 +1,4 @@
-import { AxiosError } from "axios";
+import axios from "axios";
 import type { AppError } from "@/shared/types/api.types";
 
 /**
@@ -6,7 +6,7 @@ import type { AppError } from "@/shared/types/api.types";
  * Always call this before surfacing errors to hooks or UI.
  */
 export function normalizeApiError(error: unknown): AppError {
-  if (error instanceof AxiosError) {
+  if (axios.isAxiosError(error)) {
     const body = error.response?.data;
     if (body?.code && body?.message) {
       return {

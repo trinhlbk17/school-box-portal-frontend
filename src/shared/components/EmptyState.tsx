@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { FolderX } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 

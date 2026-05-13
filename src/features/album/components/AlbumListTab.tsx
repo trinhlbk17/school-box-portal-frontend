@@ -3,7 +3,7 @@ import { Plus, ImageIcon, Image as LucideImage, Calendar } from "lucide-react";
 import { useAlbums } from "../hooks/useAlbums";
 import { AlbumStatus } from "../types/album.types";
 import { Button } from "@/shared/components/ui/button";
-import { EmptyState } from "@/shared/components/ui/empty-state";
+import { EmptyState } from "@/shared/components/EmptyState";
 import { Skeleton } from "@/shared/components/ui/skeleton";
 import { Badge } from "@/shared/components/ui/badge";
 import { format } from "date-fns";
@@ -55,7 +55,7 @@ export function AlbumListTab({ classId }: AlbumListTabProps) {
       {/* Action Bar */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="flex items-center gap-2">
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <Select value={statusFilter} onValueChange={(val) => setStatusFilter(val || "ALL")}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Filter by status" />
             </SelectTrigger>
@@ -100,12 +100,10 @@ export function AlbumListTab({ classId }: AlbumListTabProps) {
             }
             icon={<ImageIcon className="h-6 w-6 text-neutral-500" />}
             action={
-              isAdmin ? (
-                <Button onClick={() => setIsFormOpen(true)}>
-                  <Plus className="mr-2 h-4 w-4" />
-                  Create Album
-                </Button>
-              ) : undefined
+              isAdmin ? {
+                label: "Create Album",
+                onClick: () => setIsFormOpen(true)
+              } : undefined
             }
           />
         </div>

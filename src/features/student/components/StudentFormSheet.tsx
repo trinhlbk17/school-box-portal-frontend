@@ -75,12 +75,16 @@ export function StudentFormSheet({
       ...(values.gender ? { gender: values.gender } : {}),
     };
 
-    if (isEdit && student) {
-      await updateStudent.mutateAsync({ id: student.id, data: payload });
-    } else {
-      await createStudent.mutateAsync({ classId, ...payload });
+    try {
+      if (isEdit && student) {
+        await updateStudent.mutateAsync({ id: student.id, data: payload });
+      } else {
+        await createStudent.mutateAsync({ classId, ...payload });
+      }
+      onClose();
+    } catch (error) {
+      // Error is handled by the mutation hook
     }
-    onClose();
   };
 
   return (
@@ -95,66 +99,69 @@ export function StudentFormSheet({
           </SheetDescription>
         </SheetHeader>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 py-6">
-          <div className="space-y-2">
-            <Label htmlFor="student-name">
-              Full Name <span className="text-red-500">*</span>
-            </Label>
-            <Input
-              id="student-name"
-              placeholder="e.g. Nguyen Van A"
-              {...register("name")}
-            />
-            {errors.name && (
-              <p className="text-xs text-red-500">{errors.name.message}</p>
-            )}
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col h-full">
+          <div className="flex flex-col gap-4 p-4 flex-1 overflow-y-auto">
+            <div className="space-y-1.5">
+              <Label htmlFor="student-name">
+                Full Name <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="student-name"
+                placeholder="e.g. Nguyen Van A"
+                {...register("name")}
+              />
+              {errors.name && (
+                <p className="text-xs text-red-500">{errors.name.message}</p>
+              )}
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="student-dob">Date of Birth</Label>
+              <Input
+                id="student-dob"
+                type="date"
+                {...register("dateOfBirth")}
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="student-gender">Gender</Label>
+              <Select
+                value={genderValue ?? ""}
+                onValueChange={(val) =>
+                  setValue(
+                    "gender",
+                    val === "" ? undefined : (val as StudentFormValues["gender"])
+                  )
+                }
+              >
+                <SelectTrigger id="student-gender">
+                  <SelectValue placeholder="Select gender" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="MALE">Male</SelectItem>
+                  <SelectItem value="FEMALE">Female</SelectItem>
+                  <SelectItem value="OTHER">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="student-dob">Date of Birth</Label>
-            <Input
-              id="student-dob"
-              type="date"
-              {...register("dateOfBirth")}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="student-gender">Gender</Label>
-            <Select
-              value={genderValue ?? ""}
-              onValueChange={(val) =>
-                setValue(
-                  "gender",
-                  val === "" ? undefined : (val as StudentFormValues["gender"])
-                )
-              }
-            >
-              <SelectTrigger id="student-gender">
-                <SelectValue placeholder="Select gender" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="MALE">Male</SelectItem>
-                <SelectItem value="FEMALE">Female</SelectItem>
-                <SelectItem value="OTHER">Other</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <SheetFooter className="mt-2">
+          <div className="flex items-center justify-end gap-3 p-4 border-t border-neutral-100 bg-white">
             <Button
               type="button"
               variant="outline"
               onClick={onClose}
               disabled={isPending}
+              className="w-32"
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={isPending}>
+            <Button type="submit" disabled={isPending} className="w-32">
               {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {isEdit ? "Save Changes" : "Add Student"}
+              {isEdit ? "Save" : "Add Student"}
             </Button>
-          </SheetFooter>
+          </div>
         </form>
       </SheetContent>
     </Sheet>

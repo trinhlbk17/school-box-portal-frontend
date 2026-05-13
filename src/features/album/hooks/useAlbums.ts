@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { albumApi } from "../api/albumApi";
-import { AlbumListParams } from "../types/album.types";
+import type { AlbumListParams } from "../types/album.types";
 
 export const albumQueryKeys = {
   all: ["albums"] as const,

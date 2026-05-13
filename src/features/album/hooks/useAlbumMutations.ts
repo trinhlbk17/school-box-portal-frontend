@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { albumApi } from "../api/albumApi";
-import { CreateAlbumInput, UpdateAlbumInput } from "../types/album.types";
+import type { CreateAlbumInput, UpdateAlbumInput } from "../types/album.types";
 import { albumQueryKeys } from "./useAlbums";
 
 export function useCreateAlbum() {

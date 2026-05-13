@@ -1,8 +1,10 @@
-export enum AlbumStatus {
-  DRAFT = 'DRAFT',
-  PUBLISHED = 'PUBLISHED',
-  ARCHIVED = 'ARCHIVED',
-}
+export const AlbumStatus = {
+  DRAFT: 'DRAFT',
+  PUBLISHED: 'PUBLISHED',
+  ARCHIVED: 'ARCHIVED',
+} as const;
+
+export type AlbumStatus = typeof AlbumStatus[keyof typeof AlbumStatus];
 
 export interface Album {
   id: string;

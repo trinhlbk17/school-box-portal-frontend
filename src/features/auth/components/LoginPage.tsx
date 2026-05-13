@@ -34,7 +34,7 @@ export function LoginPage() {
   });
 
   const onSubmit = (values: LoginFormValues) => {
-    login(values);
+    login({ email: values.email, password: values.password, rememberMe: values.rememberMe ?? false });
   };
 
   return (

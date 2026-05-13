@@ -22,3 +22,25 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# ClaudeKit runtime / local-only state
+.claude/agent-memory/
+.claude/hooks/.logs/
+.claude/session-state/latest.md
+.claude/session-state/archive/
+.claude/settings.bak.json
+.claude/.env
+.claude/.mcp.json
+.claude/skills/.venv/
+
+# Plans: keep templates and reports structure tracked, ignore individual runs
+plans/**/*
+!plans/templates/
+!plans/templates/**
+!plans/reports/
+!plans/reports/.gitkeep
+
+# Repomix / misc artifacts
+repomix-output.xml
+prompt.md
+ck.md

@@ -1,6 +1,8 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CreateAlbumFormData, createAlbumSchema } from "../schemas/albumSchema";
+import { Loader2 } from "lucide-react";
+import { createAlbumSchema } from "../schemas/albumSchema";
+import type { CreateAlbumFormData } from "../schemas/albumSchema";
 import {
   Dialog,
   DialogContent,
@@ -8,21 +10,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/shared/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/shared/components/ui/form";
+import { Label } from "@/shared/components/ui/label";
 import { Input } from "@/shared/components/ui/input";
 import { Textarea } from "@/shared/components/ui/textarea";
 import { Button } from "@/shared/components/ui/button";
 import { useCreateAlbum, useUpdateAlbum } from "../hooks/useAlbumMutations";
-import { Album } from "../types/album.types";
+import type { Album } from "../types/album.types";
 import { useEffect } from "react";
-import { useToast } from "@/shared/hooks/use-toast";
+import { toast } from "sonner";
 
 interface AlbumFormProps {
   open: boolean;
@@ -38,12 +33,15 @@ export function AlbumForm({
   initialData,
 }: AlbumFormProps) {
   const isEditing = !!initialData;
-  const { toast } = useToast();
-
   const createMutation = useCreateAlbum();
   const updateMutation = useUpdateAlbum();
 
-  const form = useForm<CreateAlbumFormData>({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<CreateAlbumFormData>({
     resolver: zodResolver(createAlbumSchema),
     defaultValues: {
       name: "",
@@ -55,22 +53,22 @@ export function AlbumForm({
   useEffect(() => {
     if (open) {
       if (initialData) {
-        form.reset({
+        reset({
           name: initialData.name,
           description: initialData.description || "",
         });
       } else {
-        form.reset({
+        reset({
           name: "",
           description: "",
         });
       }
     }
-  }, [open, initialData, form]);
+  }, [open, initialData, reset]);
 
   const onSubmit = async (data: CreateAlbumFormData) => {
     try {
-      if (isEditing) {
+      if (isEditing && initialData) {
         await updateMutation.mutateAsync({
           id: initialData.id,
           data: {
@@ -78,8 +76,7 @@ export function AlbumForm({
             description: data.description,
           },
         });
-        toast({
-          title: "Album updated",
+        toast.success("Album updated", {
           description: "The album has been updated successfully.",
         });
       } else {
@@ -87,17 +84,14 @@ export function AlbumForm({
           ...data,
           classId,
         });
-        toast({
-          title: "Album created",
+        toast.success("Album created", {
           description: "The album has been created successfully.",
         });
       }
       onOpenChange(false);
     } catch (error: unknown) {
-      toast({
-        title: "Error",
+      toast.error("Error", {
         description: error instanceof Error ? error.message : "An error occurred while saving the album.",
-        variant: "destructive",
       });
     }
   };
@@ -116,55 +110,49 @@ export function AlbumForm({
           </DialogDescription>
         </DialogHeader>
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Album Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="e.g. Field Trip 2024" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="album-name">
+              Album Name <span className="text-red-500">*</span>
+            </Label>
+            <Input 
+              id="album-name"
+              placeholder="e.g. Field Trip 2024" 
+              {...register("name")} 
             />
+            {errors.name && (
+              <p className="text-xs text-red-500">{errors.name.message}</p>
+            )}
+          </div>
 
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description (Optional)</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Add some details about this album..."
-                      className="resize-none"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+          <div className="space-y-2">
+            <Label htmlFor="album-description">Description (Optional)</Label>
+            <Textarea
+              id="album-description"
+              placeholder="Add some details about this album..."
+              className="resize-none"
+              {...register("description")}
             />
+            {errors.description && (
+              <p className="text-xs text-red-500">{errors.description.message}</p>
+            )}
+          </div>
 
-            <div className="flex justify-end gap-3 pt-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-                disabled={isPending}
-              >
-                Cancel
-              </Button>
-              <Button type="submit" disabled={isPending}>
-                {isPending ? "Saving..." : isEditing ? "Save Changes" : "Create Album"}
-              </Button>
-            </div>
-          </form>
-        </Form>
+          <div className="flex justify-end gap-3 pt-4">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+              disabled={isPending}
+            >
+              Cancel
+            </Button>
+            <Button type="submit" disabled={isPending}>
+              {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {isPending ? "Saving..." : isEditing ? "Save Changes" : "Create Album"}
+            </Button>
+          </div>
+        </form>
       </DialogContent>
     </Dialog>
   );

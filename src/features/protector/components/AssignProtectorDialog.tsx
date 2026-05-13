@@ -89,13 +89,17 @@ export function AssignProtectorDialog({
   };
 
   const onSubmit = async (values: AssignProtectorFormValues) => {
-    await assignProtector.mutateAsync({
-      name: values.name,
-      email: values.email,
-      phone: values.phone || undefined,
-      relationship: values.relationship,
-    });
-    handleClose();
+    try {
+      await assignProtector.mutateAsync({
+        name: values.name,
+        email: values.email,
+        phone: values.phone || undefined,
+        relationship: values.relationship,
+      });
+      handleClose();
+    } catch (error) {
+      // Error handled by mutation
+    }
   };
 
   return (

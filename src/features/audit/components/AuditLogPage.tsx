@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Filter } from "lucide-react";
 import { PageHeader } from "@/shared/components/PageHeader";
 import { DataTable } from "@/shared/components/DataTable";
+import { EmptyState } from "@/shared/components/EmptyState";
 import { ErrorAlert } from "@/shared/components/ErrorAlert";
 import { Badge } from "@/shared/components/ui/badge";
 import { Input } from "@/shared/components/ui/input";
@@ -256,15 +257,23 @@ export function AuditLogPage() {
         )}
       </div>
 
-      <DataTable
-        columns={columns}
-        data={logs}
-        isLoading={isLoading}
-        totalCount={total}
-        page={page}
-        pageSize={PAGE_SIZE}
-        onPageChange={setPage}
-      />
+      {!isLoading && logs.length === 0 && !logType && !userId && !from && !to ? (
+        <EmptyState
+          title="No audit logs"
+          description="There is no system activity recorded yet."
+          icon={<Filter className="h-6 w-6 text-neutral-500" />}
+        />
+      ) : (
+        <DataTable
+          columns={columns}
+          data={logs}
+          isLoading={isLoading}
+          totalCount={total}
+          page={page}
+          pageSize={PAGE_SIZE}
+          onPageChange={setPage}
+        />
+      )}
     </div>
   );
 }

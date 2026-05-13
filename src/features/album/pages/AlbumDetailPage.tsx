@@ -15,7 +15,7 @@ import { AlbumStatus } from "../types/album.types";
 import { Button } from "@/shared/components/ui/button";
 import { Badge } from "@/shared/components/ui/badge";
 import { Skeleton } from "@/shared/components/ui/skeleton";
-import { ConfirmDialog } from "@/shared/components/ui/confirm-dialog";
+import { ConfirmDialog } from "@/shared/components/ConfirmDialog";
 import { ImageGrid } from "../components/ImageGrid";
 import { ImageUploader } from "../components/ImageUploader";
 import { AlbumForm } from "../components/AlbumForm";
@@ -28,12 +28,12 @@ import {
   UploadCloud,
   ChevronLeft,
 } from "lucide-react";
-import { useToast } from "@/shared/hooks/use-toast";
+import { toast } from "sonner";
 
 export function AlbumDetailPage() {
   const { classId, albumId } = useParams<{ classId: string; albumId: string }>();
   const navigate = useNavigate();
-  const { toast } = useToast();
+
   const { isAdmin, isTeacher } = useAuthStore((state) => ({
     isAdmin: state.isAdmin(),
     isTeacher: state.isTeacher(),
@@ -82,30 +82,30 @@ export function AlbumDetailPage() {
   const handleDeleteAlbum = async () => {
     try {
       await deleteAlbum.mutateAsync({ id: album.id, classId: album.classId });
-      toast({ title: "Album deleted" });
+      toast.success("Album deleted");
       navigate(`/admin/classes/${classId}`);
     } catch (e: unknown) {
-      toast({ title: "Failed to delete", description: e instanceof Error ? e.message : "Unknown error", variant: "destructive" });
+      toast.error("Failed to delete", { description: e instanceof Error ? e.message : "Unknown error" });
     }
   };
 
   const handlePublish = async () => {
     try {
       await publishAlbum.mutateAsync({ id: album.id, classId: album.classId });
-      toast({ title: "Album published" });
+      toast.success("Album published");
       setIsPublishConfirmOpen(false);
     } catch (e: unknown) {
-      toast({ title: "Failed to publish", description: e instanceof Error ? e.message : "Unknown error", variant: "destructive" });
+      toast.error("Failed to publish", { description: e instanceof Error ? e.message : "Unknown error" });
     }
   };
 
   const handleArchive = async () => {
     try {
       await archiveAlbum.mutateAsync({ id: album.id, classId: album.classId });
-      toast({ title: "Album archived" });
+      toast.success("Album archived");
       setIsArchiveConfirmOpen(false);
     } catch (e: unknown) {
-      toast({ title: "Failed to archive", description: e instanceof Error ? e.message : "Unknown error", variant: "destructive" });
+      toast.error("Failed to archive", { description: e instanceof Error ? e.message : "Unknown error" });
     }
   };
 
@@ -116,14 +116,14 @@ export function AlbumDetailPage() {
       await Promise.all(
         imageIds.map((id) => deleteImage.mutateAsync({ imageId: id, albumId: album.id }))
       );
-      toast({ title: "Images deleted", description: `Deleted ${imageIds.length} images.` });
+      toast.success("Images deleted", { description: `Deleted ${imageIds.length} images.` });
     } catch (e: unknown) {
-      toast({ title: "Error deleting images", description: e instanceof Error ? e.message : "Unknown error", variant: "destructive" });
+      toast.error("Error deleting images", { description: e instanceof Error ? e.message : "Unknown error" });
     }
   };
 
   const handleDownloadImages = async () => {
-    toast({ title: "Individual download not implemented yet in bulk." });
+    toast.info("Individual download not implemented yet in bulk.");
   };
 
   const handleDownloadZip = async () => {

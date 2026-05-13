@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { UserPlus, Users } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { Badge } from "@/shared/components/ui/badge";
+import { Card, CardContent } from "@/shared/components/ui/card";
 import { DataTable } from "@/shared/components/DataTable";
 import { EmptyState } from "@/shared/components/EmptyState";
 import { ErrorAlert } from "@/shared/components/ErrorAlert";
@@ -13,6 +14,7 @@ import type { ColumnDef } from "@/shared/types/dataTable.types";
 import { ROUTES } from "@/shared/constants/routes";
 import { useAuthStore } from "@/features/auth";
 import { ROLES } from "@/shared/constants/roles";
+import { useDelayedLoading } from "@/shared/hooks/useDelayedLoading";
 
 interface StudentListTabProps {
   classId: string;
@@ -41,6 +43,7 @@ export function StudentListTab({ classId }: StudentListTabProps) {
     limit: PAGE_SIZE,
     search: search || undefined,
   });
+  const showLoading = useDelayedLoading(isLoading, 300);
 
   const students = data?.data ?? [];
   const total = data?.meta?.total ?? 0;
@@ -150,17 +153,84 @@ export function StudentListTab({ classId }: StudentListTabProps) {
           }
         />
       ) : (
-        <DataTable
-          columns={columns}
-          data={students}
-          isLoading={isLoading}
-          totalCount={total}
-          page={page}
-          pageSize={PAGE_SIZE}
-          onPageChange={setPage}
-          onSearch={handleSearch}
-          searchPlaceholder="Search students..."
-        />
+        <>
+          <div className="hidden md:block">
+            <DataTable
+              columns={columns}
+              data={students}
+              isLoading={showLoading}
+              totalCount={total}
+              page={page}
+              pageSize={PAGE_SIZE}
+              onPageChange={setPage}
+              onSearch={handleSearch}
+              searchPlaceholder="Search students..."
+            />
+          </div>
+          <div className="grid grid-cols-1 gap-4 md:hidden">
+            {/* Simple search input for mobile */}
+            <div className="relative w-full">
+               <input 
+                 type="text" 
+                 placeholder="Search students..." 
+                 className="w-full px-3 py-2 border rounded-md text-sm"
+                 value={search}
+                 onChange={(e) => handleSearch(e.target.value)}
+               />
+            </div>
+            {students.map((student) => (
+              <Card 
+                key={student.id} 
+                className="cursor-pointer hover:bg-neutral-50 transition-colors"
+                onClick={() => navigate(ROUTES.ADMIN.STUDENT_DETAIL(student.id))}
+              >
+                <CardContent className="p-4 flex justify-between items-center">
+                  <div className="space-y-1">
+                    <p className="font-medium text-neutral-900">{student.name}</p>
+                    <div className="flex gap-2 text-xs text-neutral-500">
+                      {student.gender && <span>{GENDER_LABELS[student.gender] ?? student.gender}</span>}
+                      {student.dateOfBirth && <span>• {new Date(student.dateOfBirth).toLocaleDateString()}</span>}
+                    </div>
+                  </div>
+                  <div>
+                    {student.isActive ? (
+                      <Badge variant="default" className="bg-green-100 text-green-700 border-green-200">
+                        Active
+                      </Badge>
+                    ) : (
+                      <Badge variant="secondary" className="text-neutral-500">
+                        Inactive
+                      </Badge>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+            
+            {/* Simple mobile pagination */}
+            {total > PAGE_SIZE && (
+              <div className="flex justify-between items-center pt-2">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => setPage(p => Math.max(1, p - 1))}
+                  disabled={page === 1}
+                >
+                  Previous
+                </Button>
+                <span className="text-sm text-neutral-500">Page {page}</span>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => setPage(p => p + 1)}
+                  disabled={page * PAGE_SIZE >= total}
+                >
+                  Next
+                </Button>
+              </div>
+            )}
+          </div>
+        </>
       )}
 
       {canManage && (

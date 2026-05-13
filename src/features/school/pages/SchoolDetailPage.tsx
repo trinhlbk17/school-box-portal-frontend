@@ -26,6 +26,7 @@ import {
 import type { Class } from "@/features/class/types/class.types";
 import { ROUTES } from "@/shared/constants/routes";
 import type { ColumnDef } from "@/shared/types/dataTable.types";
+import { useDelayedLoading } from "@/shared/hooks/useDelayedLoading";
 
 export function SchoolDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -33,6 +34,7 @@ export function SchoolDetailPage() {
 
   const { data: school, isLoading: schoolLoading, error: schoolError } = useSchool(id!);
   const { data: classes = [], isLoading: classesLoading } = useClassesBySchool(id!);
+  const showClassesLoading = useDelayedLoading(classesLoading, 300);
   const deleteClass = useDeleteClass();
 
   const [isSchoolSheetOpen, setIsSchoolSheetOpen] = useState(false);
@@ -186,7 +188,7 @@ export function SchoolDetailPage() {
           <DataTable
             columns={classColumns}
             data={classes}
-            isLoading={classesLoading}
+            isLoading={showClassesLoading}
             totalCount={classes.length}
             searchPlaceholder="Search classes..."
           />

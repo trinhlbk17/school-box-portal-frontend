@@ -7,7 +7,7 @@ import type {
   UserQueryParams,
   RegeneratePasswordResponse,
 } from "@/features/user/types/user.types";
-import type { PaginatedResponse } from "@/shared/types/api.types";
+import type { PaginatedResponse, ApiResponse } from "@/shared/types/api.types";
 
 export const userApi = {
   getUsers: async (
@@ -21,42 +21,42 @@ export const userApi = {
   },
 
   getUser: async (id: string): Promise<AdminUserDetail> => {
-    const response = await apiClient.get<AdminUserDetail>(`/users/${id}`);
-    return response.data;
+    const response = await apiClient.get<ApiResponse<AdminUserDetail>>(`/users/${id}`);
+    return response.data.data;
   },
 
   createUser: async (data: CreateUserInput): Promise<AdminUser> => {
-    const response = await apiClient.post<AdminUser>("/users", data);
-    return response.data;
+    const response = await apiClient.post<ApiResponse<AdminUser>>("/users", data);
+    return response.data.data;
   },
 
   updateUser: async (
     id: string,
     data: UpdateUserInput
   ): Promise<AdminUser> => {
-    const response = await apiClient.patch<AdminUser>(`/users/${id}`, data);
-    return response.data;
+    const response = await apiClient.patch<ApiResponse<AdminUser>>(`/users/${id}`, data);
+    return response.data.data;
   },
 
   deactivateUser: async (id: string): Promise<AdminUser> => {
-    const response = await apiClient.patch<AdminUser>(
+    const response = await apiClient.patch<ApiResponse<AdminUser>>(
       `/users/${id}/deactivate`
     );
-    return response.data;
+    return response.data.data;
   },
 
   activateUser: async (id: string): Promise<AdminUser> => {
-    const response = await apiClient.patch<AdminUser>(`/users/${id}/activate`);
-    return response.data;
+    const response = await apiClient.patch<ApiResponse<AdminUser>>(`/users/${id}/activate`);
+    return response.data.data;
   },
 
   regeneratePassword: async (
     id: string
   ): Promise<RegeneratePasswordResponse> => {
-    const response = await apiClient.post<RegeneratePasswordResponse>(
+    const response = await apiClient.post<ApiResponse<RegeneratePasswordResponse>>(
       `/users/${id}/regenerate-password`
     );
-    return response.data;
+    return response.data.data;
   },
 
   deleteUser: async (id: string): Promise<void> => {

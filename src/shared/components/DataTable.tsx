@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -12,7 +12,7 @@ import { Button } from "@/shared/components/ui/button";
 import { Skeleton } from "@/shared/components/ui/skeleton";
 import { Search, ChevronUp, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { useDebounce } from "@/shared/hooks/useDebounce";
-import { ColumnDef } from "@/shared/types/dataTable.types";
+import type { ColumnDef } from "@/shared/types/dataTable.types";
 import { cn } from "@/shared/lib/utils";
 
 interface DataTableProps<T extends { id: string }> {
@@ -57,14 +57,15 @@ export function DataTable<T extends { id: string }>({
     }
   }, [debouncedSearch, onSearch]);
 
+  const safeData = Array.isArray(data) ? data : [];
   const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
-  const isAllSelected = data.length > 0 && selectedRowIds.length === data.length;
-  const isSomeSelected = selectedRowIds.length > 0 && selectedRowIds.length < data.length;
+  const isAllSelected = safeData.length > 0 && selectedRowIds.length === safeData.length;
+  const isSomeSelected = selectedRowIds.length > 0 && selectedRowIds.length < safeData.length;
 
   const handleSelectAll = (checked: boolean) => {
     if (!onRowSelect) return;
     if (checked) {
-      onRowSelect(data.map((item) => item.id));
+      onRowSelect(safeData.map((item) => item.id));
     } else {
       onRowSelect([]);
     }
@@ -156,7 +157,7 @@ export function DataTable<T extends { id: string }>({
                   ))}
                 </TableRow>
               ))
-            ) : data.length === 0 ? (
+            ) : safeData.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={columns.length + (onRowSelect ? 1 : 0)} className="h-24 text-center">
                   <div className="flex flex-col items-center justify-center text-neutral-500">
@@ -165,7 +166,7 @@ export function DataTable<T extends { id: string }>({
                 </TableCell>
               </TableRow>
             ) : (
-              data.map((item) => {
+              safeData.map((item) => {
                 const isSelected = selectedRowIds.includes(item.id);
                 return (
                   <TableRow

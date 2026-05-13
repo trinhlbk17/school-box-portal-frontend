@@ -4,10 +4,8 @@ import { toast } from "sonner";
 import {
   Link2,
   Link2Off,
-  FolderOpen,
   CheckCircle2,
   AlertCircle,
-  Clock,
   Loader2,
 } from "lucide-react";
 import { PageHeader } from "@/shared/components/PageHeader";
@@ -23,14 +21,10 @@ import {
 } from "@/shared/components/ui/card";
 import { useBoxStatus } from "@/features/box/hooks/useBoxStatus";
 import { useBoxConnect, useBoxDisconnect } from "@/features/box/hooks/useBoxConnect";
-import { BoxFolderBrowser } from "@/features/box/components/BoxFolderBrowser";
-import type { BoxFolderBrowserResult } from "@/features/box/types/box.types";
 
 export function BoxSettingsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [isDisconnectOpen, setIsDisconnectOpen] = useState(false);
-  const [isBrowserOpen, setIsBrowserOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<BoxFolderBrowserResult | null>(null);
 
   const { data: status, isLoading, error, refetch } = useBoxStatus();
   const { connect } = useBoxConnect();
@@ -52,13 +46,6 @@ export function BoxSettingsPage() {
   const handleConfirmDisconnect = async () => {
     await disconnect.mutateAsync();
     setIsDisconnectOpen(false);
-  };
-
-  const handleBrowseSelect = (result: BoxFolderBrowserResult) => {
-    setSelectedItem(result);
-    toast.success(
-      `Selected ${result.type}: ${result.name} (ID: ${result.id})`
-    );
   };
 
   if (error) {
@@ -91,7 +78,7 @@ export function BoxSettingsPage() {
               <Loader2 className="h-5 w-5 animate-spin" />
               <span className="text-sm">Checking connection...</span>
             </div>
-          ) : status?.connected ? (
+          ) : status?.isConnected ? (
             <div className="space-y-4">
               {/* Connected state */}
               <div className="flex items-start gap-3">
@@ -106,24 +93,10 @@ export function BoxSettingsPage() {
                       <span className="font-mono">{status.boxUserId}</span>
                     </p>
                   )}
-                  {status.tokenExpiry && (
-                    <p className="text-xs text-neutral-500 flex items-center gap-1 mt-0.5">
-                      <Clock className="h-3 w-3" />
-                      Token expires:{" "}
-                      {new Date(status.tokenExpiry).toLocaleDateString()}
-                    </p>
-                  )}
                 </div>
               </div>
 
               <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  onClick={() => setIsBrowserOpen(true)}
-                >
-                  <FolderOpen className="h-4 w-4 mr-2" />
-                  Browse Files
-                </Button>
                 <Button
                   variant="outline"
                   className="text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200"
@@ -133,17 +106,6 @@ export function BoxSettingsPage() {
                   Disconnect
                 </Button>
               </div>
-
-              {/* Show last selected item if any */}
-              {selectedItem && (
-                <div className="rounded-md border border-neutral-200 bg-neutral-50 p-3 text-sm">
-                  <p className="text-xs text-neutral-500 mb-1">Last selected:</p>
-                  <p className="font-medium text-neutral-900">{selectedItem.name}</p>
-                  <p className="text-xs font-mono text-neutral-500">
-                    {selectedItem.type} · ID: {selectedItem.id}
-                  </p>
-                </div>
-              )}
             </div>
           ) : (
             <div className="space-y-4">
@@ -200,12 +162,6 @@ export function BoxSettingsPage() {
         isLoading={disconnect.isPending}
         onConfirm={handleConfirmDisconnect}
         onClose={() => setIsDisconnectOpen(false)}
-      />
-
-      <BoxFolderBrowser
-        isOpen={isBrowserOpen}
-        onClose={() => setIsBrowserOpen(false)}
-        onSelect={handleBrowseSelect}
       />
     </div>
   );

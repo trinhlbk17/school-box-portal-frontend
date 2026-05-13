@@ -6,7 +6,7 @@ import type {
   TransferStudentInput,
   StudentListParams,
 } from "@/features/student/types/student.types";
-import type { PaginatedResponse } from "@/shared/types/api.types";
+import type { PaginatedResponse, ApiResponse } from "@/shared/types/api.types";
 
 export const studentApi = {
   getStudents: async (
@@ -21,21 +21,21 @@ export const studentApi = {
   },
 
   getStudent: async (id: string): Promise<Student> => {
-    const response = await apiClient.get<Student>(`/students/${id}`);
-    return response.data;
+    const response = await apiClient.get<ApiResponse<Student>>(`/students/${id}`);
+    return response.data.data;
   },
 
   createStudent: async (data: CreateStudentInput): Promise<Student> => {
-    const response = await apiClient.post<Student>("/students", data);
-    return response.data;
+    const response = await apiClient.post<ApiResponse<Student>>("/students", data);
+    return response.data.data;
   },
 
   updateStudent: async (
     id: string,
     data: UpdateStudentInput
   ): Promise<Student> => {
-    const response = await apiClient.put<Student>(`/students/${id}`, data);
-    return response.data;
+    const response = await apiClient.put<ApiResponse<Student>>(`/students/${id}`, data);
+    return response.data.data;
   },
 
   deleteStudent: async (id: string): Promise<void> => {
@@ -46,10 +46,10 @@ export const studentApi = {
     id: string,
     data: TransferStudentInput
   ): Promise<Student> => {
-    const response = await apiClient.post<Student>(
+    const response = await apiClient.post<ApiResponse<Student>>(
       `/students/${id}/transfer`,
       data
     );
-    return response.data;
+    return response.data.data;
   },
 };

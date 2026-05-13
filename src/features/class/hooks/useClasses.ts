@@ -40,8 +40,8 @@ export function useCreateClass() {
   return useMutation({
     mutationFn: ({ schoolId, data }: { schoolId: string; data: CreateClassInput }) =>
       classApi.createClass(schoolId, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: classKeys.lists() });
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: classKeys.all });
       toast.success("Class created successfully");
     },
     onError: (error: { message: string }) => {
@@ -56,8 +56,7 @@ export function useUpdateClass() {
     mutationFn: ({ id, data }: { id: string; data: UpdateClassInput }) =>
       classApi.updateClass(id, data),
     onSuccess: (_, { id }) => {
-      queryClient.invalidateQueries({ queryKey: classKeys.lists() });
-      queryClient.invalidateQueries({ queryKey: classKeys.detail(id) });
+      queryClient.invalidateQueries({ queryKey: classKeys.all });
       toast.success("Class updated successfully");
     },
     onError: (error: { message: string }) => {
@@ -71,7 +70,7 @@ export function useDeleteClass() {
   return useMutation({
     mutationFn: (id: string) => classApi.deleteClass(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: classKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: classKeys.all });
       toast.success("Class deleted");
     },
     onError: (error: { message: string }) => {
